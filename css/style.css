@@ -1,0 +1,963 @@
+
+/* ==============================
+   GLOBAL STYLES
+============================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #78baff;
+    --secondary: #a4cfff;
+    --text: #f1f6ff;
+    --muted: #9caec9;
+    --glass: rgba(255, 255, 255, 0.065);
+    --glass-border: rgba(255, 255, 255, 0.10);
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    color: var(--text);
+    position: relative;
+    isolation: isolate;
+
+    background:
+        radial-gradient(ellipse at 15% 10%, #234b76 0%, transparent 40%),
+        linear-gradient(135deg, #0b1528, #101f38 55%, #142c49);
+
+    background-attachment: fixed;
+
+    transition: background 0.8s ease;
+}
+
+body[data-weather="clear"] {
+    background:
+        radial-gradient(ellipse at 80% 10%, #87622f 0%, transparent 35%),
+        linear-gradient(135deg, #172642, #263b60, #172c48);
+}
+
+body[data-weather="clouds"] {
+    background:
+        radial-gradient(ellipse at 80% 10%, #43546b 0%, transparent 40%),
+        linear-gradient(135deg, #111c30, #27364b, #182a43);
+}
+
+body[data-weather="rain"] {
+    background:
+        radial-gradient(ellipse at 80% 10%, #234b68 0%, transparent 40%),
+        linear-gradient(135deg, #101b30, #193650, #10253a);
+}
+
+body[data-weather="snow"] {
+    background:
+        radial-gradient(ellipse at 80% 10%, #536b8a 0%, transparent 40%),
+        linear-gradient(135deg, #17243b, #344965, #1d304a);
+}
+
+body[data-weather="night"] {
+    background:
+        radial-gradient(ellipse at 80% 10%, #34406f 0%, transparent 40%),
+        linear-gradient(135deg, #080e21, #151c3c, #101a37);
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app-container {
+    max-width: 1100px;
+    width: 92%;
+    margin: auto;
+    padding: 35px 0 20px;
+}
+
+
+/* ==============================
+   HEADER
+============================== */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 65px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 27px;
+    font-weight: 600;
+}
+
+.brand-icon {
+    color: var(--primary);
+    font-size: 30px;
+}
+
+.brand-highlight {
+    color: var(--primary);
+}
+
+.header-label {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+
+/* ==============================
+   SEARCH SECTION
+============================== */
+
+.search-section {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.search-heading h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(30px, 5vw, 43px);
+    font-weight: 500;
+    letter-spacing: -1px;
+}
+
+.search-heading p {
+    color: var(--muted);
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.search-wrapper {
+    max-width: 650px;
+    margin: 30px auto 0;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 9px 8px 18px;
+
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+
+    backdrop-filter: blur(15px);
+    transition: border 0.3s;
+}
+
+.search-box:focus-within {
+    border-color: var(--primary);
+}
+
+.search-icon {
+    font-size: 25px;
+    color: var(--muted);
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 14px;
+}
+
+.search-box input::placeholder {
+    color: #8295b2;
+}
+
+.search-btn {
+    background: var(--primary);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 23px;
+    color: #10213b;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.search-btn:hover {
+    background: #a2d2ff;
+    transform: translateY(-2px);
+}
+
+.search-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.location-btn {
+    background: transparent;
+    border: none;
+    color: var(--secondary);
+    margin-top: 18px;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.location-btn:hover {
+    color: white;
+}
+
+.location-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #ff9d9d;
+    font-size: 13px;
+    margin-top: 15px;
+    min-height: 18px;
+}
+
+
+/* ==============================
+   GLASS CARDS
+============================== */
+
+.glass-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+}
+
+
+/* ==============================
+   CURRENT WEATHER
+============================== */
+
+.current-weather {
+    padding: 30px 35px;
+    animation: fadeUp 0.6s ease;
+}
+
+.current-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.section-label {
+    color: var(--primary);
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    font-weight: 700;
+}
+
+.current-top h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 29px;
+    font-weight: 500;
+    margin-top: 7px;
+}
+
+.muted-text {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #9bdfba;
+}
+
+.live-indicator span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #65d995;
+    box-shadow: 0 0 10px #65d995;
+    animation: pulse 1.5s infinite;
+}
+
+.current-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.temperature-block {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.temperature-block img {
+    width: 125px;
+    height: 125px;
+    filter: drop-shadow(0 5px 15px rgba(120,186,255,0.2));
+}
+
+.temperature-block h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(65px, 10vw, 85px);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.temperature-block p {
+    color: var(--secondary);
+    font-size: 14px;
+    text-transform: capitalize;
+    margin-top: 9px;
+}
+
+.feels-block {
+    text-align: right;
+}
+
+.feels-block p {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+.feels-block h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 25px;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.weather-summary {
+    border-top: 1px solid var(--glass-border);
+    padding-top: 18px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+
+/* ==============================
+   WEATHER DETAILS
+============================== */
+
+.details-section {
+    margin-top: 40px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 23px;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.detail-card {
+    padding: 22px;
+    transition: 0.3s;
+}
+
+.detail-card:hover,
+.sun-card:hover,
+.forecast-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(120,186,255,0.35);
+}
+
+.detail-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-top span {
+    font-size: 19px;
+}
+
+.detail-top p {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.detail-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 27px;
+    font-weight: 500;
+    margin-top: 17px;
+}
+
+.detail-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+
+/* ==============================
+   SUNRISE AND SUNSET
+============================== */
+
+.sun-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 18px;
+}
+
+.sun-card {
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    transition: 0.3s;
+}
+
+.sun-icon {
+    font-size: 35px;
+}
+
+.sun-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+
+/* ==============================
+   FORECAST
+============================== */
+
+.forecast-section {
+    margin-top: 45px;
+}
+
+.forecast-tag {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.forecast-card {
+    padding: 19px 10px;
+    text-align: center;
+    transition: 0.3s;
+    animation: fadeUp 0.5s ease both;
+}
+
+.forecast-card:nth-child(2) {
+    animation-delay: 0.08s;
+}
+
+.forecast-card:nth-child(3) {
+    animation-delay: 0.16s;
+}
+
+.forecast-card:nth-child(4) {
+    animation-delay: 0.24s;
+}
+
+.forecast-card:nth-child(5) {
+    animation-delay: 0.32s;
+}
+
+.forecast-day {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.forecast-date {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 5px;
+}
+
+.forecast-icon {
+    width: 65px;
+    height: 65px;
+    margin: 8px 0;
+}
+
+.forecast-condition {
+    color: var(--secondary);
+    font-size: 11px;
+    text-transform: capitalize;
+    min-height: 30px;
+}
+
+.forecast-temps {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 13px;
+    font-size: 13px;
+}
+
+.forecast-low {
+    color: var(--muted);
+}
+
+.forecast-rain {
+    font-size: 10px;
+    color: #8fcaff;
+    margin-top: 12px;
+}
+
+.forecast-message {
+    color: #ffaaaa;
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+
+/* ==============================
+   RECENT SEARCHES
+============================== */
+
+.history-section {
+    margin-top: 45px;
+}
+
+.history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.history-item {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 9px 16px;
+    color: var(--secondary);
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.history-item:hover {
+    background: rgba(120,186,255,0.15);
+    color: white;
+}
+
+
+/* ==============================
+   EMPTY STATE
+============================== */
+
+.empty-state {
+    text-align: center;
+    padding: 60px 15px;
+    animation: fadeUp 0.7s ease;
+}
+
+.empty-icon {
+    font-size: 65px;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.empty-state h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 23px;
+    font-weight: 500;
+}
+
+.empty-state p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 10px;
+    line-height: 1.7;
+}
+
+
+/* ==============================
+   LOADING
+============================== */
+
+.loader {
+    text-align: center;
+    padding: 35px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.spinner {
+    width: 35px;
+    height: 35px;
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    animation: spin 0.8s linear infinite;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ==============================
+   FOOTER
+============================== */
+
+.footer {
+    border-top: 1px solid var(--glass-border);
+    margin-top: 65px;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    color: #7185a3;
+    font-size: 11px;
+}
+
+
+/* ==============================
+   ANIMATIONS
+============================== */
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    50% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes float {
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==============================
+   RESPONSIVE DESIGN
+============================== */
+
+@media (max-width: 750px) {
+
+    .forecast-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .header {
+        margin-bottom: 45px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .app-container {
+        width: 94%;
+        padding-top: 22px;
+    }
+
+    .header {
+        margin-bottom: 40px;
+    }
+
+    .header-label {
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .brand {
+        font-size: 23px;
+    }
+
+    .search-heading h1 {
+        font-size: 30px;
+    }
+
+    .search-heading p {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .search-box {
+        gap: 7px;
+        padding-left: 12px;
+    }
+
+    .search-btn {
+        padding: 11px 14px;
+        font-size: 12px;
+    }
+
+    .search-box input {
+        font-size: 12px;
+    }
+
+    .current-weather {
+        padding: 22px 17px;
+    }
+
+    .current-top h2 {
+        font-size: 23px;
+    }
+
+    .temperature-block {
+        gap: 4px;
+    }
+
+    .temperature-block img {
+        width: 85px;
+        height: 85px;
+    }
+
+    .temperature-block h1 {
+        font-size: 58px;
+    }
+
+    .temperature-block p {
+        font-size: 11px;
+    }
+
+    .feels-block h3 {
+        font-size: 19px;
+    }
+
+    .details-grid {
+        gap: 10px;
+    }
+
+    .detail-card {
+        padding: 16px 13px;
+    }
+
+    .detail-card h3 {
+        font-size: 22px;
+    }
+
+    .detail-top p {
+        font-size: 11px;
+    }
+
+    .sun-card {
+        padding: 14px 10px;
+        gap: 8px;
+    }
+
+    .sun-icon {
+        font-size: 25px;
+    }
+
+    .sun-card h3 {
+        font-size: 19px;
+    }
+
+    .forecast-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .forecast-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+
+    .footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}
+
+
+/* =================================
+   DYNAMIC CITY BACKGROUND
+================================= */
+
+.city-background {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 0;
+
+    width: 100%;
+    height: 100vh;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    filter: saturate(0.8);
+
+    transition: opacity 0.8s ease;
+
+    transform: scale(1.02);
+
+}
+
+
+/* Show background at 50% opacity */
+
+.city-background.is-visible {
+
+    opacity: 0.5;
+
+}
+
+
+/* Dark overlay for readability */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+
+    background: linear-gradient(
+        135deg,
+        rgba(7, 14, 28, 0.65),
+        rgba(7, 14, 28, 0.72)
+    );
+}
+
+
+/* Keep dashboard above background */
+
+.app-container {
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+
+/* Photographer attribution */
+
+.photo-credit {
+
+    font-size: 10px;
+
+    color: #a4b4cc;
+
+}
+
+.photo-credit a {
+
+    color: #c6dcfa;
+
+    text-decoration: none;
+
+    transition: color 0.3s;
+
+}
+
+.photo-credit a:hover {
+
+    color: white;
+
+    text-decoration: underline;
+
+}
+
+
+/* Mobile background adjustment */
+
+@media (max-width: 600px) {
+
+    .city-background {
+
+        background-position: center;
+
+    }
+
+}
+
+.city-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image: url("https://images.unsplash.com/photo-1519608487953-e999c86e7455");
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+}
+
+body {
+    position: relative;
+    isolation: isolate;
+}
+
+.app-container {
+    position: relative;
+    z-index: 2;
+}
