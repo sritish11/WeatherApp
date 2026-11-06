@@ -1,0 +1,16 @@
+# API credentials
+js/config.js
+
+# Environment variables
+.env
+.env.*
+
+# Dependencies
+node_modules/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
